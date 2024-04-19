@@ -3,13 +3,13 @@ namespace DiscreteProject.Logic;
 
 public class Row
 {
-    public List<char> RowText { get; private set; }
+    public List<Cell> Cells { get; private set; }
     public Row(int width)
     {
-        RowText = new(width);
-        for (int i = 0; i < RowText.Capacity; i++)
+        Cells = new(width);
+        for (int i = 0; i < Cells.Capacity; i++)
         {
-            RowText.Add('X');
+            Cells.Add(new('X'));
         }
     }
 
@@ -21,7 +21,7 @@ public class Row
             {
                 throw new Exception("Invalid row configuration");
             }
-            RowText[i] = s[i];
+            Cells[i].ChangeValue(s[i]);
         }
     }
 }

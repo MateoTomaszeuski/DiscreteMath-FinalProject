@@ -1,50 +1,61 @@
 ﻿@page "/"
+<h1>Welcome to the Marble Table problem Checker</h1>
 
 <form @onsubmit=CreateEmptyBoard>
+    <label>Board Size</label>
     <input type="number" @bind=BoardSize />
-    <button type="submit">Create Empty Board</button>
+    <button class="btn btn-primary" type="submit">Create Empty Board</button>
 </form>
 
 @if (board != null)
 {
     <form @onsubmit=@(() => {ModifyRow();})>
+        <label>Modify a Specific Row</label>
         <label>Row Index</label>
         <input type="number" @bind=rowIndex />
         <label>Row Text:</label>
         <input type="text" @bind=rowText />
         <p>Note: The row text only accepts '0' to place a marble or 'X' to set an empty space</p>
-        <button type="submit">Modify Row</button>
+        <button class="btn btn-primary" type="submit">Modify Row</button>
     </form>
     <table>
         @foreach (var row in board.Rows)
         {
             <tr>
-                @foreach (var cell in row.RowText)
-                {
-                    @if (cell == 'X')
+                <td>
+                    @(rowUiIndex++)
+                    @if (rowUiIndex >= BoardSize)
                     {
-                        <td>⚪</td>
+                        rowUiIndex = 0;
                     }
-                    else if (cell == '0')
+                </td>
+                @foreach (var cell in row.Cells)
+                {
+                    @if (cell.Value == 'X')
                     {
-                        <td>⚫</td>
+                        <td @onclick="@(() => SwitchCell(cell))">⚪</td>
+                    }
+                    else if (cell.Value == '0')
+                    {
+                        <td @onclick="@(() => SwitchCell(cell))">⚫</td>
                     }
                 }
             </tr>
         }
     </table>
-    <button @onclick=CheckBoardIfSolvable>Check if your Board is Solvable</button>
-    @if(solvable != "")
+    <button class="btn btn-primary" @onclick=CheckBoardIfSolvable>Check if your Board is Solvable</button>
+    @if (solvable != "")
     {
         <p>@solvable</p>
     }
-    
+
 }
 
 @code {
     int BoardSize { get; set; }
     Board board { get; set; }
     int rowIndex;
+    int rowUiIndex;
     string rowText = "";
     string solvable = "";
     void CreateEmptyBoard()
@@ -65,5 +76,9 @@
         {
             solvable = e.Message;
         }
+    }
+    void SwitchCell(Cell cell)
+    {
+        board.ModifyCell(cell);
     }
 }

@@ -34,11 +34,11 @@ public class Board
         {
             for (int i = layer; i < n - 1; i++)
             {
-                if (board.Rows[layer].RowText[i] == '0')
+                if (board.Rows[layer].Cells[i].Value == '0')
                 {
                     AddElementOfH(layer, i);
                 }
-                if (board.Rows[i].RowText[layer] == '0')
+                if (board.Rows[i].Cells[layer].Value == '0')
                 {
                     AddElementOfH(i, layer);
                 }
@@ -46,11 +46,11 @@ public class Board
         }
         for (int i = 0; i < n; i++)
         {
-            if (board.Rows[n - 1].RowText[i] == '0')
+            if (board.Rows[n - 1].Cells[i].Value == '0')
             {
                 AddElementOfH(n - 1, i);
             }
-            if (board.Rows[i].RowText[n - 1] == '0')
+            if (board.Rows[i].Cells[n - 1].Value == '0')
             {
                 AddElementOfH(i, n - 1);
             }
@@ -67,14 +67,18 @@ public class Board
     }
     private void AddElementOfH(int i, int j)
     {
-        Rows[i].RowText[j] = Rows[i].RowText[j] == '0' ? 'X' : '0';
+        Rows[i].Cells[j] = Rows[i].Cells[j].Value == '0' ? new Cell('X') : new Cell('0');
     }
 
     public bool IsBoardSolvable()
     {
         int n = Size;
-        return Rows[n - 2].RowText[n - 2] == 'X' && Rows[n - 2].RowText[n - 1] == 'X' &&
-               Rows[n - 1].RowText[n - 2] == 'X' && Rows[n - 1].RowText[n - 1] == 'X';
+        return Rows[n - 2].Cells[n - 2].Value == 'X' && Rows[n - 2].Cells[n - 1].Value == 'X' &&
+               Rows[n - 1].Cells[n - 2].Value == 'X' && Rows[n - 1].Cells[n - 1].Value == 'X';
 
+    }
+    public void ModifyCell(Cell cell)
+    {
+        cell.InvertValue();
     }
 }
