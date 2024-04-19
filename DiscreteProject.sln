@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscreteProject.Logic", "DiscreteProject.Logic\DiscreteProject.Logic.csproj", "{C5CD3CB6-AA4E-43E2-A8BB-B2B81778E133}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscreteProject.WebUI", "DiscreteProject.WebUI\DiscreteProject.WebUI.csproj", "{60C6B537-82BA-4B77-8C71-D14DA015D6F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A0F89F9D-1246-4FD5-9D7C-23D981F22896}"
+	ProjectSection(SolutionItems) = preProject
+		Notes.md = Notes.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5CD3CB6-AA4E-43E2-A8BB-B2B81778E133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5CD3CB6-AA4E-43E2-A8BB-B2B81778E133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5CD3CB6-AA4E-43E2-A8BB-B2B81778E133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5CD3CB6-AA4E-43E2-A8BB-B2B81778E133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60C6B537-82BA-4B77-8C71-D14DA015D6F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60C6B537-82BA-4B77-8C71-D14DA015D6F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60C6B537-82BA-4B77-8C71-D14DA015D6F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60C6B537-82BA-4B77-8C71-D14DA015D6F6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FEF990B7-1B04-4C88-88D3-EEFC96F4CACE}
+	EndGlobalSection
+EndGlobal

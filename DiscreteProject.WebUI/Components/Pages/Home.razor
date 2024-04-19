@@ -1,0 +1,69 @@
+﻿@page "/"
+
+<form @onsubmit=CreateEmptyBoard>
+    <input type="number" @bind=BoardSize />
+    <button type="submit">Create Empty Board</button>
+</form>
+
+@if (board != null)
+{
+    <form @onsubmit=@(() => {ModifyRow();})>
+        <label>Row Index</label>
+        <input type="number" @bind=rowIndex />
+        <label>Row Text:</label>
+        <input type="text" @bind=rowText />
+        <p>Note: The row text only accepts '0' to place a marble or 'X' to set an empty space</p>
+        <button type="submit">Modify Row</button>
+    </form>
+    <table>
+        @foreach (var row in board.Rows)
+        {
+            <tr>
+                @foreach (var cell in row.RowText)
+                {
+                    @if (cell == 'X')
+                    {
+                        <td>⚪</td>
+                    }
+                    else if (cell == '0')
+                    {
+                        <td>⚫</td>
+                    }
+                }
+            </tr>
+        }
+    </table>
+    <button @onclick=CheckBoardIfSolvable>Check if your Board is Solvable</button>
+    @if(solvable != "")
+    {
+        <p>@solvable</p>
+    }
+    
+}
+
+@code {
+    int BoardSize { get; set; }
+    Board board { get; set; }
+    int rowIndex;
+    string rowText = "";
+    string solvable = "";
+    void CreateEmptyBoard()
+    {
+        board = new Board(BoardSize);
+    }
+    void ModifyRow()
+    {
+        board.SetRowConfiguration(rowIndex, rowText);
+    }
+    void CheckBoardIfSolvable()
+    {
+        try
+        {
+            board.ReduceBoardTo2x2();
+        }
+        catch (Exception e)
+        {
+            solvable = e.Message;
+        }
+    }
+}
