@@ -61,7 +61,10 @@
     string solvable = "";
     void CreateEmptyBoard()
     {
+        rowIndex = 0;
+        rowUiIndex = 0;
         board = new Board(BoardSize);
+        solvable = "";
     }
     void ModifyRow()
     {
