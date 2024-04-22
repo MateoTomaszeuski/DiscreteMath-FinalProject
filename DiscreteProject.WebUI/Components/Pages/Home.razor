@@ -59,6 +59,10 @@
     int rowUiIndex;
     string rowText = "";
     string solvable = "";
+    protected override void OnInitialized()
+    {
+        Board.ElementOfHHasBeenAdded += () => InvokeAsync(StateHasChanged);
+    }
     void CreateEmptyBoard()
     {
         board = new Board(BoardSize);

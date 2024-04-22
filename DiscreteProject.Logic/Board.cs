@@ -4,6 +4,7 @@ namespace DiscreteProject.Logic;
 
 public class Board
 {
+    public static event Action ElementOfHHasBeenAdded;
     public int Size { get; set; }
     public Row[] Rows { get; set; }
     public Board(int size)
@@ -67,7 +68,9 @@ public class Board
     }
     private void AddElementOfH(int i, int j)
     {
-        Rows[i].Cells[j] = Rows[i].Cells[j].Value == '0' ? new Cell('X') : new Cell('0');
+        Rows[i].Cells[j].InvertValue();
+        ElementOfHHasBeenAdded?.Invoke();
+        Thread.Sleep(50);
     }
 
     public bool IsBoardSolvable()
