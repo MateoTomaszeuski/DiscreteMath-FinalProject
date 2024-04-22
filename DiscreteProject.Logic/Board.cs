@@ -8,7 +8,7 @@ public class Board
     public int Size { get; set; }
     private Row[] rows;
     public Row[] Rows { get => rows; }
-    public Action ElementOfHAdded { get; set; }
+    public static event Action ElementOfHAdded;
     public Board(int size)
     {
         Size = size;
@@ -16,15 +16,6 @@ public class Board
         for (int i = 0; i < size; i++)
         {
             rows[i] = new Row(size);
-        }
-    }
-    public Board(Board old)
-    {
-        Size = old.Size;
-        rows = new Row[Size];
-        for (int i = 0; i < Size; i++)
-        {
-            rows[i] = old.rows[i];
         }
     }
     public void SetRowConfiguration(int rowNumber, string input)
@@ -38,30 +29,38 @@ public class Board
             rows[rowNumber].SetText(input);
         }
     }
-    public void ReduceBoardTo2x2()
+    public async Task ReduceBoardTo2x2()
     {
-        int n = Size;
-        while (n >= 2)
+        bool changed;
+        do
         {
-            for (int i = 0; i < n - 1; i++)
+            changed = false;
+            for (int n = 2; n <= Size; n++)
             {
-                if (rows[i].Cells[0].Value == '0' && rows[i + 1].Cells[0].Value == '0' && rows[i + 2].Cells[0].Value != '0')
+                for (int i = 0; i <= n - 3; i++)
                 {
-                    var newCells = AddElementOfH(rows[i].Cells[0], rows[i + 1].Cells[0], rows[i + 2].Cells[0]);
-                    rows[i].Cells[0] = newCells.a;
-                    rows[i + 1].Cells[0] = newCells.b;
-                    rows[i + 2].Cells[0] = newCells.c;
+                    for (int j = 0; j < Size; j++)
+                    {
+                        if (await CheckAndUpdateCells(i, j, true))
+                        {
+                            changed = true;
+                        }
+                    }
                 }
-                else if (rows[0].Cells[i].Value == '0' && rows[0].Cells[i + 1].Value == '0' && rows[0].Cells[i + 2].Value != '0')
+
+                for (int j = 0; j <= n - 3; j++)
                 {
-                    var newCells = AddElementOfH(rows[0].Cells[i], rows[0].Cells[i + 1], rows[0].Cells[i + 2]);
-                    rows[0].Cells[i] = newCells.a;
-                    rows[0].Cells[i + 1] = newCells.b;
-                    rows[0].Cells[i + 2] = newCells.c;
+                    for (int i = 0; i < Size; i++)
+                    {
+                        if (await CheckAndUpdateCells(i, j, false))
+                        {
+                            changed = true;
+                        }
+                    }
                 }
             }
-            n--;
-        }
+        } while (changed);
+
         if (IsBoardSolvable())
         {
             throw new Exception("Board is solvable");
@@ -71,19 +70,56 @@ public class Board
             throw new Exception("Board is not solvable");
         }
     }
-    private (Cell a, Cell b, Cell c) AddElementOfH(Cell a, Cell b, Cell c)
+
+    private async Task<bool> CheckAndUpdateCells(int i, int j, bool checkRows)
+    {
+        if (checkRows)
+        {
+            if ((rows[i].Cells[j].Value == '0' && rows[i + 1].Cells[j].Value == '0' && rows[i + 2].Cells[j].Value != '0') ||
+                (rows[i].Cells[j].Value != '0' && rows[i + 1].Cells[j].Value == '0' && rows[i + 2].Cells[j].Value == '0'))
+            {
+                await AddElementOfH(rows[i].Cells[j], rows[i + 1].Cells[j], rows[i + 2].Cells[j]);
+                return true;
+            }
+        }
+        else
+        {
+            if ((rows[i].Cells[j].Value == '0' && rows[i].Cells[j + 1].Value == '0' && rows[i].Cells[j + 2].Value != '0') ||
+                (rows[i].Cells[j].Value != '0' && rows[i].Cells[j + 1].Value == '0' && rows[i].Cells[j + 2].Value == '0'))
+            {
+                await AddElementOfH(rows[i].Cells[j], rows[i].Cells[j + 1], rows[i].Cells[j + 2]);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private async Task AddElementOfH(Cell a, Cell b, Cell c)
     {
         a.InvertValue();
         b.InvertValue();
         c.InvertValue();
-        return (a, b, c);
+        ElementOfHAdded?.Invoke();
+        await Task.Delay(100);
     }
 
     public bool IsBoardSolvable()
     {
-        int n = Size;
-        return rows[n - 2].Cells[n - 2].Value == 'X' && rows[n - 2].Cells[n - 1].Value == 'X' &&
-               rows[n - 1].Cells[n - 2].Value == 'X' && rows[n - 1].Cells[n - 1].Value == 'X';
+        for (int i = 0; i < rows.Length; i++)
+        {
+            for (int j = 0; j < rows[i].Cells.Count; j++)
+            {
+                if (i == rows.Length - 1 && j == rows[i].Cells.Count - 1 && rows[i].Cells[j].Value == '0')
+                {
+                    continue;
+                }
+                else if (rows[i].Cells[j].Value == '0')
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
 
     }
     public void ModifyCell(Cell cell)
