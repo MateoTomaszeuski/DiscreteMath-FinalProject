@@ -37,7 +37,8 @@ public class Board
             changed = false;
             for (int n = 2; n <= Size; n++)
             {
-                for (int i = 0; i <= n - 3; i++)
+                // Check from top to bottom
+                for (int i = 0; i < n - 2; i++)
                 {
                     for (int j = 0; j < Size; j++)
                     {
@@ -48,7 +49,8 @@ public class Board
                     }
                 }
 
-                for (int j = 0; j <= n - 3; j++)
+                // Check from left to right
+                for (int j = 0; j < n - 2; j++)
                 {
                     for (int i = 0; i < Size; i++)
                     {
@@ -56,6 +58,18 @@ public class Board
                         {
                             changed = true;
                         }
+                    }
+                }
+            }
+
+            // Check from bottom left corner to top right corner
+            for (int i = Size - 3; i >= 0; i--)
+            {
+                for (int j = Size - 3; j >= 0; j--)
+                {
+                    if (await CheckAndUpdateCells(i, j, true))
+                    {
+                        changed = true;
                     }
                 }
             }
@@ -75,8 +89,7 @@ public class Board
     {
         if (checkRows)
         {
-            if ((rows[i].Cells[j].Value == '0' && rows[i + 1].Cells[j].Value == '0' && rows[i + 2].Cells[j].Value != '0') ||
-                (rows[i].Cells[j].Value != '0' && rows[i + 1].Cells[j].Value == '0' && rows[i + 2].Cells[j].Value == '0'))
+            if (rows[i].Cells[j].Value == '0' && rows[i + 1].Cells[j].Value == '0' && rows[i + 2].Cells[j].Value != '0')
             {
                 await AddElementOfH(rows[i].Cells[j], rows[i + 1].Cells[j], rows[i + 2].Cells[j]);
                 return true;
@@ -84,8 +97,7 @@ public class Board
         }
         else
         {
-            if ((rows[i].Cells[j].Value == '0' && rows[i].Cells[j + 1].Value == '0' && rows[i].Cells[j + 2].Value != '0') ||
-                (rows[i].Cells[j].Value != '0' && rows[i].Cells[j + 1].Value == '0' && rows[i].Cells[j + 2].Value == '0'))
+            if (rows[i].Cells[j].Value == '0' && rows[i].Cells[j + 1].Value == '0' && rows[i].Cells[j + 2].Value != '0')
             {
                 await AddElementOfH(rows[i].Cells[j], rows[i].Cells[j + 1], rows[i].Cells[j + 2]);
                 return true;
@@ -93,6 +105,7 @@ public class Board
         }
         return false;
     }
+
 
     private async Task AddElementOfH(Cell a, Cell b, Cell c)
     {
