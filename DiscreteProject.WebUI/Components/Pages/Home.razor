@@ -6,6 +6,7 @@
     <input type="number" @bind=BoardSize />
     <button class="btn btn-primary" type="submit">Create Empty Board</button>
 </form>
+<button class="btn btn-primary" @onclick=CreateExerciseBoard>Create the Board From the Book!</button>
 
 @if (board != null)
 {
@@ -59,27 +60,56 @@
     int rowUiIndex;
     string rowText = "";
     string solvable = "";
+
     protected override void OnInitialized()
     {
-        Board.ElementOfHHasBeenAdded += () => InvokeAsync(StateHasChanged);
+        Board.ElementOfHAdded += () => InvokeAsync(StateHasChanged);
     }
+
     void CreateEmptyBoard()
     {
+        rowIndex = 0;
+        rowUiIndex = 0;
         board = new Board(BoardSize);
+        solvable = "";
+    }
+    void CreateExerciseBoard()
+    {
+        solvable = "";
+        BoardSize = 10;
+        board = new Board(10);
+        board.SetRowConfiguration(0, "0000000000");
+        board.SetRowConfiguration(1, "0000000000");
+        board.SetRowConfiguration(2, "0000000000");
+        board.SetRowConfiguration(3, "0000000000");
+        board.SetRowConfiguration(4, "0000000000");
+        board.SetRowConfiguration(5, "0000000000");
+        board.SetRowConfiguration(6, "0000000000");
+        board.SetRowConfiguration(7, "0000000000");
+        board.SetRowConfiguration(8, "0000000000");
+        board.SetRowConfiguration(9, "000000000X");
     }
     void ModifyRow()
     {
-        board.SetRowConfiguration(rowIndex, rowText);
-    }
-    void CheckBoardIfSolvable()
-    {
         try
         {
-            board.ReduceBoardTo2x2();
+            board.SetRowConfiguration(rowIndex, rowText);
         }
         catch (Exception e)
         {
             solvable = e.Message;
+        }
+    }
+    async void CheckBoardIfSolvable()
+    {
+        try
+        {
+            await board.SolveBoard();
+        }
+        catch (Exception e)
+        {
+            solvable = e.Message;
+            StateHasChanged();
         }
     }
     void SwitchCell(Cell cell)
