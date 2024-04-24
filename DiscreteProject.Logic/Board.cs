@@ -5,6 +5,7 @@ namespace DiscreteProject.Logic;
 
 public class Board
 {
+    public static event Action ElementOfHHasBeenAdded;
     public int Size { get; set; }
     private Row[] rows;
     public Row[] Rows { get => rows; }
@@ -112,6 +113,7 @@ public class Board
         c.InvertValue();
         ElementOfHAdded?.Invoke();
         await Task.Delay(100);
+
     }
 
     public bool IsBoardSolvable()
