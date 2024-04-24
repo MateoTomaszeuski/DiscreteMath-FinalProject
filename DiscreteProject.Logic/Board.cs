@@ -29,43 +29,17 @@ public class Board
             rows[rowNumber].SetText(input);
         }
     }
-    public async Task ReduceBoardTo2x2()
+    public async Task SolveBoard()
     {
         bool changed;
         do
         {
             changed = false;
-            for (int n = 2; n <= Size; n++)
-            {
-                // Check from top to bottom
-                for (int i = 0; i < n - 2; i++)
-                {
-                    for (int j = 0; j < Size; j++)
-                    {
-                        if (await CheckAndUpdateCells(i, j, true))
-                        {
-                            changed = true;
-                        }
-                    }
-                }
 
-                // Check from left to right
-                for (int j = 0; j < n - 2; j++)
-                {
-                    for (int i = 0; i < Size; i++)
-                    {
-                        if (await CheckAndUpdateCells(i, j, false))
-                        {
-                            changed = true;
-                        }
-                    }
-                }
-            }
-
-            // Check from bottom left corner to top right corner
-            for (int i = Size - 3; i >= 0; i--)
+            // Check from top to bottom and bottom to top
+            for (int i = 0; i < Size; i++)
             {
-                for (int j = Size - 3; j >= 0; j--)
+                for (int j = 0; j < Size; j++)
                 {
                     if (await CheckAndUpdateCells(i, j, true))
                     {
@@ -73,6 +47,19 @@ public class Board
                     }
                 }
             }
+
+            // Check from left to right and right to left
+            for (int j = 0; j < Size; j++)
+            {
+                for (int i = 0; i < Size; i++)
+                {
+                    if (await CheckAndUpdateCells(i, j, false))
+                    {
+                        changed = true;
+                    }
+                }
+            }
+
         } while (changed);
 
         if (IsBoardSolvable())
@@ -81,7 +68,7 @@ public class Board
         }
         else
         {
-            throw new Exception("Board is not solvable");
+            throw new Exception("Board is not automatically solvable");
         }
     }
 
@@ -89,22 +76,33 @@ public class Board
     {
         if (checkRows)
         {
-            if (rows[i].Cells[j].Value == '0' && rows[i + 1].Cells[j].Value == '0' && rows[i + 2].Cells[j].Value != '0')
+            if (i + 2 < Size && rows[i].Cells[j].Value == '0' && rows[i + 1].Cells[j].Value == '0' && rows[i + 2].Cells[j].Value != '0')
             {
                 await AddElementOfH(rows[i].Cells[j], rows[i + 1].Cells[j], rows[i + 2].Cells[j]);
+                return true;
+            }
+            else if (i > 1 && rows[i].Cells[j].Value != '0' && rows[i - 1].Cells[j].Value == '0' && rows[i - 2].Cells[j].Value == '0')
+            {
+                await AddElementOfH(rows[i].Cells[j], rows[i - 1].Cells[j], rows[i - 2].Cells[j]);
                 return true;
             }
         }
         else
         {
-            if (rows[i].Cells[j].Value == '0' && rows[i].Cells[j + 1].Value == '0' && rows[i].Cells[j + 2].Value != '0')
+            if (j + 2 < Size && rows[i].Cells[j].Value == '0' && rows[i].Cells[j + 1].Value == '0' && rows[i].Cells[j + 2].Value != '0')
             {
                 await AddElementOfH(rows[i].Cells[j], rows[i].Cells[j + 1], rows[i].Cells[j + 2]);
+                return true;
+            }
+            else if (j > 1 && rows[i].Cells[j].Value != '0' && rows[i].Cells[j - 1].Value == '0' && rows[i].Cells[j - 2].Value == '0')
+            {
+                await AddElementOfH(rows[i].Cells[j], rows[i].Cells[j - 1], rows[i].Cells[j - 2]);
                 return true;
             }
         }
         return false;
     }
+
 
 
     private async Task AddElementOfH(Cell a, Cell b, Cell c)
