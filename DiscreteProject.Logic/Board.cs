@@ -19,6 +19,21 @@ public class Board
             rows[i] = new Row(size);
         }
     }
+
+    public Board(Board board)
+    {
+        Size = board.Size;
+        rows = new Row[Size];
+        for (int i = 0; i < Size; i++)
+        {
+            rows[i] = new Row(Size);
+            for (int j = 0; j < Size; j++)
+            {
+                rows[i].Cells[j] = new Cell(board.Rows[i].Cells[j].Value);
+            }
+        }
+    }
+
     public void SetRowConfiguration(int rowNumber, string input)
     {
         if (input.Length != Size)
@@ -65,7 +80,7 @@ public class Board
 
         if (IsBoardSolved())
         {
-            throw new Exception("Board is solvable");
+            throw new Exception("Board can be automatically solved");
         }
         else
         {
@@ -113,6 +128,57 @@ public class Board
         c.InvertValue();
         ElementOfHAdded?.Invoke();
         await Task.Delay(100);
+
+    }
+    public void CheckIfBoardIsAnElementOFH()
+    {
+        Board board = new(this);
+        int n = Size;
+        for (int layer = 0; layer < n - 2; layer++)
+        {
+            for (int i = layer; i < n - 1; i++)
+            {
+                if (board.Rows[layer].Cells[i].Value == '0')
+                {
+                    board.CleanUp(layer, i);
+                }
+                if (board.Rows[i].Cells[layer].Value == '0')
+                {
+                    board.CleanUp(i, layer);
+                }
+            }
+        }
+        for (int i = 0; i < n; i++)
+        {
+            if (board.Rows[n - 1].Cells[i].Value == '0')
+            {
+                board.CleanUp(n - 1, i);
+            }
+            if (board.Rows[i].Cells[n - 1].Value == '0')
+            {
+                board.CleanUp(i, n - 1);
+            }
+        }
+
+        if (board.IsBoardSolvable())
+        {
+            throw new Exception("The current board can be solved.");
+        }
+        else
+        {
+            throw new Exception("The current board can't be solved.");
+        }
+    }
+    private void CleanUp(int i, int j)
+    {
+        Rows[i].Cells[j] = Rows[i].Cells[j].Value == '0' ? new Cell('X') : new Cell('0');
+    }
+
+    private bool IsBoardSolvable()
+    {
+        int n = Size;
+        return Rows[n - 2].Cells[n - 2].Value == 'X' && Rows[n - 2].Cells[n - 1].Value == 'X' &&
+               Rows[n - 1].Cells[n - 2].Value == 'X' && Rows[n - 1].Cells[n - 1].Value == 'X';
 
     }
 

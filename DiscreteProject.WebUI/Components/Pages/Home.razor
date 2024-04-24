@@ -46,6 +46,7 @@
         }
     </table>
     <button class="btn btn-primary" @onclick=CheckBoardIfSolvable>Check if your Board is Solvable</button>
+    <button class="btn btn-primary" @onclick=AutomaticSolve>Solve The Board</button>
     @if (solvable != "")
     {
         <p>@solvable</p>
@@ -100,7 +101,19 @@
             solvable = e.Message;
         }
     }
-    async void CheckBoardIfSolvable()
+    void CheckBoardIfSolvable()
+    {
+        try
+        {
+
+            board.CheckIfBoardIsAnElementOFH();
+        }
+        catch (Exception e)
+        {
+            solvable = e.Message;
+        }
+    }
+    async void AutomaticSolve()
     {
         try
         {
@@ -111,6 +124,7 @@
             solvable = e.Message;
             StateHasChanged();
         }
+
     }
     void SwitchCell(Cell cell)
     {
