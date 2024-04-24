@@ -63,7 +63,7 @@ public class Board
 
         } while (changed);
 
-        if (IsBoardSolvable())
+        if (IsBoardSolved())
         {
             throw new Exception("Board is solvable");
         }
@@ -116,7 +116,7 @@ public class Board
 
     }
 
-    public bool IsBoardSolvable()
+    public bool IsBoardSolved()
     {
         for (int i = 0; i < rows.Length; i++)
         {
